@@ -5,10 +5,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.uteev.myweather.R
+import com.uteev.myweather.databinding.CardItemBinding
 
 class DayItemViewHolder(val view : View) : RecyclerView.ViewHolder(view) {
-    val dateElem = view.findViewById<TextView>(R.id.tvDateElem)
-    val conditionsElem = view.findViewById<TextView>(R.id.tvConditionsElem)
-    val tempElem = view.findViewById<TextView>(R.id.tvTempElem)
-    val condElem = view.findViewById<ImageView>(R.id.ivCondElem)
+    val binding : CardItemBinding = CardItemBinding.bind(view)
+    fun bind(item: WeatherModel) = with(binding) {
+        tvDateElem.text = item.time
+        tvConditionsElem.text = item.condition
+        tvTempElem.text = item.currentTemp
+    }
 }

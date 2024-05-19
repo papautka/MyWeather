@@ -10,6 +10,8 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.uteev.myweather.databinding.ActivityMainBinding
+import com.uteev.myweather.fragments.MainFragment
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -18,32 +20,37 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-        binding.bGet.setOnClickListener {
-            getResult("Tashkent")
-        }
+        setContentView(R.layout.activity_main)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.placeHolder, MainFragment.newInstance())
+            .commit()
     }
+}
 
-    private fun getResult(nameCity : String) {
-        val BASE_URL = "https://api.weatherapi.com/v1/"
-        val API_KEY = "90003910355246fcbb182615241905"
-        val url = BASE_URL +
-                "current.json" +
-                "?key=" +
-                API_KEY +
-                "&q=" +
-                nameCity +
-                "&aqi=no"
-        val queue = Volley.newRequestQueue(this)
-        val stringRequest = StringRequest(Request.Method.GET,
-            url,
-            {
+
+private fun getResult(nameCity : String) {
+    val BASE_URL = "https://api.weatherapi.com/v1/"
+    val API_KEY = "90003910355246fcbb182615241905"
+    val url = BASE_URL +
+            "current.json" +
+            "?key=" +
+            API_KEY +
+            "&q=" +
+            nameCity +
+            "&aqi=no"
+//    val queue = Volley.newRequestQueue(this)
+    val stringRequest = StringRequest(Request.Method.GET,
+        url,
+        {
                 response->
-                Log.d("Response",response)
-            },{
-                Log.d("Error",it.toString())
-            }
-        )
-        queue.add(stringRequest)
-    }
+            val obj = JSONObject(response)
+            val temp = obj.getJSONObject("current").getString("temp_c")
+            Log.d("Response",temp)
+            Log.d("Response",response)
+        },{
+            Log.d("Error",it.toString())
+        }
+    )
+//    queue.add(stringRequest)
 }

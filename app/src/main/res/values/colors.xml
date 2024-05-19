@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="DeepSkyBlue">#00BFFF</color>
+    <color name="LightSkyBlue">#87CEFA</color>
+    <color name="Coral">#FF7F50</color>
+    <color name="Cyan">#00FFFF</color>
+    <color name="LimeGreen">#32CD32</color>
+    <color name="Magenta">#FF00FF</color>
+    <color name="Gold">#FFD700</color>
 </resources>

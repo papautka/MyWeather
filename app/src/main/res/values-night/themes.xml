@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryVariant">@color/Cyan</item>
+        <item name="colorPrimary">@color/white</item>
     </style>
 </resources>

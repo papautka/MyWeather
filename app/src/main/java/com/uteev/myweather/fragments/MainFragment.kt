@@ -9,18 +9,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.tabs.TabLayoutMediator
 import com.uteev.myweather.R
 import com.uteev.myweather.application.isPermissionGranted
 import com.uteev.myweather.databinding.ActivityMainBinding
 import com.uteev.myweather.databinding.FragmentMainBinding
+import com.uteev.myweather.fragments.adapter.ViewPagerAdapter
 
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
 
+
     // для того чтобы выводить окно для пользователя при разрешении на получение геопозиции
     // string - разрешение
     private lateinit var pLauncher: ActivityResultLauncher<String>
+
+    private val fragmentList  = listOf(
+        HoursFragment.newInstance(),
+        DaysFragment.newInstance()
+    )
 
 
 
@@ -36,6 +45,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
+        init()
     }
 
     private fun permissionListener() {
@@ -55,6 +65,18 @@ class MainFragment : Fragment() {
             permissionListener()
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun init() {
+        val adapter = ViewPagerAdapter(activity as FragmentActivity, fragmentList)
+        binding.viewPager.adapter = adapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) {
+            tab, poistion->
+            when(poistion) {
+                0 -> tab.text = "HOURS"
+                1 -> tab.text = "DAYS"
+            }
+        }.attach()
     }
 
 

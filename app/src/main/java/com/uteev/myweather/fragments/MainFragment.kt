@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.uteev.myweather.R
 import com.uteev.myweather.application.isPermissionGranted
-import com.uteev.myweather.databinding.ActivityMainBinding
+import com.uteev.myweather.data.ApiService
 import com.uteev.myweather.databinding.FragmentMainBinding
 import com.uteev.myweather.fragments.adapter.ViewPagerAdapter
 
@@ -38,15 +38,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-
-        val gifResource = R.drawable.ghibli_image
-        binding?.let {
-            Glide.with(this)
-                .asGif()
-                .load(gifResource)
-                .into(it.imageView)
-        }
-
+        showGif()
         return binding?.root
     }
 
@@ -76,7 +68,25 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun showGif() {
+        val gifResource = R.drawable.ghibli_image
+        binding?.let {
+            Glide.with(this)
+                .asGif()
+                .load(gifResource)
+                .into(it.imageView)
+        }
+    }
+
+    private fun connectApiService() {
+        val apiService = ApiService(this, "Omsk")
+        apiService.requestWeatherData("Omsk")
+
+    }
+
+
     private fun init() {
+        connectApiService()
         val adapter = ViewPagerAdapter(activity as FragmentActivity, fragmentList)
         binding?.viewPager?.adapter = adapter
         binding?.let {

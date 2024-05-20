@@ -81,7 +81,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvCity" />
 
             <TextView
-                android:id="@+id/tvCurrent"
+                android:id="@+id/tvCondit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gloria_hallelujah"
@@ -101,7 +101,7 @@
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCurrent" />
+                app:layout_constraintTop_toBottomOf="@+id/tvCondit" />
 
             <ImageView
                 android:id="@+id/ivUpdate"

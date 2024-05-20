@@ -1,56 +1,51 @@
 package com.uteev.myweather.data
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.uteev.myweather.fragments.MainFragment
-import com.uteev.myweather.fragments.adapter.RecycleView.WeatherAdapter
 import com.uteev.myweather.fragments.adapter.RecycleView.WeatherModel
 import org.json.JSONObject
 
-class ApiService(private val context: MainFragment, private val city: String) {
-    fun requestWeatherData(city: String) {
+class ApiService(private val context: MainFragment) {
+    val currentWeatherLiveData = MutableLiveData<WeatherModel>()
+    val forecastWeatherLiveData = MutableLiveData<List<WeatherModel>>()
+
+    fun requestWeatherData() {
         val API_KEY = "90003910355246fcbb182615241905"
-        val url = "https://api.weatherapi.com/v1/forecast.json?" +
-                "key=" +
-                API_KEY +
-                "&q=" +
-                city +
-                "&days=" +
-                "10" +
-                "&aqi=no&alerts=no"
-        val queue = Volley.newRequestQueue(context.activity)
+        val url = "https://api.weatherapi.com/v1/forecast.json?key=$API_KEY&q=Moscow&days=10&aqi=no&alerts=no"
+        val queue = Volley.newRequestQueue(context.requireActivity())
         val stringRequest = StringRequest(
             Request.Method.GET,
             url,
-            {
-                resultJson->
+            { resultJson ->
                 parseWeatherData(resultJson)
-                Log.d("ApiService Response",resultJson)
-
+                Log.d("ApiService Response", resultJson)
             },
-            {
-                error->
-                Log.d("ApiService Error",error.toString())
+            { error ->
+                Log.d("ApiService Error", error.toString())
             }
-            )
+        )
         queue.add(stringRequest)
     }
 
     private fun parseWeatherData(resultJson: String) {
-        val FIRST_ELEMENT = 0
         val mainObject = JSONObject(resultJson)
-        val listItem = parseForecastDays(mainObject)
-        val item = parseCurrentData(mainObject, listItem[FIRST_ELEMENT])
-//        Log.d("listItem", listItem.toString())
-        Log.d("parseWeatherData", item.toString())
+        val forecastList = parseForecastDays(mainObject)
+        val currentWeather = parseCurrentData(mainObject, forecastList[0])
+
+        forecastWeatherLiveData.postValue(forecastList)
+        currentWeatherLiveData.postValue(currentWeather)
     }
-    private fun parseCurrentData(mainObject : JSONObject, weatherModel: WeatherModel) : WeatherModel {
+
+    private fun parseCurrentData(mainObject: JSONObject, weatherModel: WeatherModel): WeatherModel {
         val location = mainObject.getJSONObject("location")
         val current = mainObject.getJSONObject("current")
         val condition = current.getJSONObject("condition")
-        val result = WeatherModel(
+
+        return WeatherModel(
             location.getString("name"),
             current.getString("last_updated"),
             condition.getString("text"),
@@ -60,18 +55,18 @@ class ApiService(private val context: MainFragment, private val city: String) {
             condition.getString("icon"),
             weatherModel.hours
         )
-        return result
     }
 
-    private fun parseForecastDays(mainObject: JSONObject) : List<WeatherModel> {
-        val list = ArrayList<WeatherModel>()
-        val daysArray = mainObject.getJSONObject("forecast")
-            .getJSONArray("forecastday")
+    private fun parseForecastDays(mainObject: JSONObject): List<WeatherModel> {
+        val list = mutableListOf<WeatherModel>()
+        val daysArray = mainObject.getJSONObject("forecast").getJSONArray("forecastday")
+
         for (i in 0 until daysArray.length()) {
-            val forecastday = daysArray[i] as JSONObject
+            val forecastday = daysArray.getJSONObject(i)
             val day = forecastday.getJSONObject("day")
             val condition = day.getJSONObject("condition")
-            val tmpElemForList = WeatherModel(
+
+            val weatherModel = WeatherModel(
                 "",
                 forecastday.getString("date"),
                 condition.getString("text"),
@@ -81,8 +76,7 @@ class ApiService(private val context: MainFragment, private val city: String) {
                 condition.getString("icon"),
                 forecastday.getJSONArray("hour").toString()
             )
-            list.add(tmpElemForList)
-
+            list.add(weatherModel)
         }
         return list
     }

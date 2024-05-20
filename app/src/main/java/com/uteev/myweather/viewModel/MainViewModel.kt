@@ -1,8 +1,6 @@
 package com.uteev.myweather.viewModel
 
-
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.uteev.myweather.data.ApiService
 import com.uteev.myweather.fragments.adapter.RecycleView.WeatherModel

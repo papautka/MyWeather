@@ -27,30 +27,3 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 }
-
-
-private fun getResult(nameCity : String) {
-    val BASE_URL = "https://api.weatherapi.com/v1/"
-    val API_KEY = "90003910355246fcbb182615241905"
-    val url = BASE_URL +
-            "current.json" +
-            "?key=" +
-            API_KEY +
-            "&q=" +
-            nameCity +
-            "&aqi=no"
-//    val queue = Volley.newRequestQueue(this)
-    val stringRequest = StringRequest(Request.Method.GET,
-        url,
-        {
-                response->
-            val obj = JSONObject(response)
-            val temp = obj.getJSONObject("current").getString("temp_c")
-            Log.d("Response",temp)
-            Log.d("Response",response)
-        },{
-            Log.d("Error",it.toString())
-        }
-    )
-//    queue.add(stringRequest)
-}

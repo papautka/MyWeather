@@ -52,7 +52,7 @@ class ApiService(private val context: MainFragment) {
             current.getString("temp_c"),
             weatherModel.maxTemp,
             weatherModel.minTemp,
-            condition.getString("icon"),
+            weatherModel.imageUrl,
             weatherModel.hours
         )
     }
@@ -73,7 +73,7 @@ class ApiService(private val context: MainFragment) {
                 "",
                 day.getString("maxtemp_c"),
                 day.getString("mintemp_c"),
-                condition.getString("icon"),
+                condition.getString("icon").replace("//", "https://"),
                 forecastday.getJSONArray("hour").toString()
             )
             list.add(weatherModel)

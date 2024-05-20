@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -59,5 +60,9 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.7.1")
 
     implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+
+    kapt("com.github.bumptech.glide:compiler:4.12.0")
 
 }

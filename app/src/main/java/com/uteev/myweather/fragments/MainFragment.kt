@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.uteev.myweather.R
 import com.uteev.myweather.application.isPermissionGranted
@@ -19,7 +20,6 @@ import com.uteev.myweather.fragments.adapter.ViewPagerAdapter
 
 
 class MainFragment : Fragment() {
-    private lateinit var binding: FragmentMainBinding
 
 
     // для того чтобы выводить окно для пользователя при разрешении на получение геопозиции
@@ -30,17 +30,26 @@ class MainFragment : Fragment() {
         HoursFragment.newInstance(),
         DaysFragment.newInstance()
     )
-
-
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
-        // Inflate the layout for this fragment
-        return binding.root
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+
+        val gifResource = R.drawable.ghibli_image
+        binding?.let {
+            Glide.with(this)
+                .asGif()
+                .load(gifResource)
+                .into(it.imageView)
+        }
+
+        return binding?.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,16 +78,22 @@ class MainFragment : Fragment() {
 
     private fun init() {
         val adapter = ViewPagerAdapter(activity as FragmentActivity, fragmentList)
-        binding.viewPager.adapter = adapter
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) {
-            tab, poistion->
-            when(poistion) {
-                0 -> tab.text = "HOURS"
-                1 -> tab.text = "DAYS"
-            }
-        }.attach()
+        binding?.viewPager?.adapter = adapter
+        binding?.let {
+            TabLayoutMediator(it.tabLayout, binding!!.viewPager) {
+                tab, poistion->
+                when(poistion) {
+                    0 -> tab.text = "HOURS"
+                    1 -> tab.text = "DAYS"
+                }
+            }.attach()
+        }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
     companion object {
         @JvmStatic
